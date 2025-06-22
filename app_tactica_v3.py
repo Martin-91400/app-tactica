@@ -7,25 +7,25 @@ import re
 import requests
 from streamlit_lottie import st_lottie
 
-st.set_page_config(page_title="Informe Táctico Seguro", layout="centered")
-st.title("📊 Informe de Rendimiento del Rival")
+st.set_page_config(page_title="Informe Táctico", layout="centered")
+st.title("⚽ Informe de Rendimiento del Rival")
 
-# 🎞️ Función para cargar animación desde Lottie
+# Función para cargar animaciones Lottie
 def cargar_lottie(url):
     r = requests.get(url)
     if r.status_code == 200:
         return r.json()
     return None
 
-# 🔄 Animación profesional (radar girando)
-lottie_url = "https://assets10.lottiefiles.com/packages/lf20_3vbOcw.json"
+# Nueva animación de fútbol: jugador pateando la pelota
+lottie_url = "https://assets2.lottiefiles.com/packages/lf20_1pxqjqps.json"
 animacion = cargar_lottie(lottie_url)
 if animacion:
-    st_lottie(animacion, height=180, key="intro")
+    st_lottie(animacion, height=220, key="intro")
 
 st.write("Subí una planilla Excel con los datos del equipo rival (xG, pases, intercepciones, etc).")
 
-# ✅ Validación segura de nombres
+# Validación segura de nombres
 def es_nombre_valido(nombre):
     patron = r"^[a-zA-ZáéíóúÁÉÍÓÚüÜñÑ\s\-]{1,40}$"
     return re.match(patron, nombre)
@@ -34,7 +34,7 @@ def registrar_sospecha(valor):
     with open("log_segu.txt", "a") as log:
         log.write(f"Input sospechoso: {valor}\n")
 
-# 🚨 Sección 1: Informe táctico
+# Sección 1: Informe táctico
 archivo_rival = st.file_uploader("📂 Cargar archivo Excel", type="xlsx", key="rival")
 
 if archivo_rival:
@@ -56,7 +56,7 @@ if archivo_rival:
             st.subheader(f"📌 Detalle de {seleccionado}")
             st.write(df_rival[df_rival['Jugador'] == seleccionado])
 
-            # 📈 Gráfico radar individual
+            # Radar individual del jugador
             datos = df_rival[df_rival['Jugador'] == seleccionado].iloc[0]
             categorias = ['xG', 'Pases', 'Minutos', 'Intercepciones']
             valores = [datos[c] for c in categorias]
@@ -69,17 +69,18 @@ if archivo_rival:
             angulos += angulos[:1]
 
             fig, ax = plt.subplots(figsize=(5, 5), subplot_kw=dict(polar=True))
-            ax.plot(angulos, valores_norm, color='blue', linewidth=2)
-            ax.fill(angulos, valores_norm, color='skyblue', alpha=0.4)
+            ax.plot(angulos, valores_norm, color='green', linewidth=2)
+            ax.fill(angulos, valores_norm, color='lime', alpha=0.4)
             ax.set_thetagrids(np.degrees(angulos[:-1]), etiquetas)
             ax.set_title(f"Radar de {seleccionado}", size=14)
             st.pyplot(fig)
+
     except Exception as e:
         st.error(f"Error al procesar el archivo: {e}")
 else:
-    st.info("Esperando que cargues la planilla con datos del equipo rival.")
+    st.info("Esperando que cargues la planilla del rival.")
 
-# 📊 Sección 2: Gráficos estadísticos múltiples
+# Sección 2: Creador de gráficos
 st.header("📊 Creador de Gráficos Estadísticos")
 archivo_grafico = st.file_uploader("📂 Subí tu archivo de datos (CSV o Excel)", type=["csv", "xlsx"], key="graficos")
 
@@ -90,10 +91,9 @@ if archivo_grafico:
         else:
             df = pd.read_excel(archivo_grafico)
 
-        st.write("Vista previa de los datos:", df.head())
-
+        st.write("Vista previa:", df.head())
         columnas = df.select_dtypes(include='number').columns.tolist()
-        seleccionadas = st.multiselect("Seleccioná las columnas para graficar", columnas)
+        seleccionadas = st.multiselect("Seleccioná columnas para graficar", columnas)
         tipo = st.selectbox("Tipo de gráfico", ["Barras", "Línea", "Radar"])
 
         if tipo == "Barras":
@@ -113,17 +113,17 @@ if archivo_grafico:
                 fig.update_layout(polar=dict(radialaxis=dict(visible=True)))
                 st.plotly_chart(fig)
             else:
-                st.warning("Seleccioná al menos 3 columnas para gráfico radar.")
+                st.warning("Seleccioná al menos 3 columnas para radar.")
     except Exception as e:
         st.error(f"Error al procesar los datos: {e}")
 else:
-    st.info("Esperando que cargues un archivo con datos numéricos para los gráficos.")
+    st.info("Esperando archivo para generar gráficos.")
 
-# --- Footer personalizado ---
+# Footer
 st.markdown("---")
 st.markdown(
     "<div style='text-align: center; font-size: 0.85em; color: gray;'>"
-    "🔐 App protegida y diseñada por <strong>Martin</strong> · Powered by Streamlit + Python · 2025"
+    "🛡️ App diseñada por <strong>Martin</strong> · Streamlit + Python · 2025"
     "</div>",
     unsafe_allow_html=True
 )
