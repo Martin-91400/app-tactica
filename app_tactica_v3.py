@@ -1,3 +1,4 @@
+# Tu código comienza acá
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -133,7 +134,7 @@ if archivo_propio:
             datos_eq = df_propio[df_propio['Jugador'] == seleccionado_eq]
             st.write(datos_eq)
 
-            # Radar
+            # Radar propio
             datos_row = datos_eq.iloc[0]
             categorias_eq = ['xG', 'Pases', 'Minutos', 'Intercepciones']
             valores_eq = [datos_row[c] for c in categorias_eq]
@@ -150,7 +151,7 @@ if archivo_propio:
             ax_eq.set_title(f"Radar de {seleccionado_eq}", size=14)
             st.pyplot(fig_eq)
 
-            # Generar HTML → PDF
+            # Generar HTML para el PDF
             html_pdf = f"""
             <html>
             <head>
@@ -178,14 +179,7 @@ if archivo_propio:
                 with open(tmpfile.name, "rb") as pdf_file:
                     b64 = base64.b64encode(pdf_file.read()).decode('utf-8')
                     st.subheader("⬇️ Exportar informe en PDF")
-                    st.markdown(
-                        f'<a href="data:application/pdf;base64,{b64}" download="informe_{seleccionado_eq}.pdf">📥 Descargar PDF</a>',
-                        unsafe_allow_html=True
-                    )
-            else:
-                st.error("No se pudo generar el archivo PDF.")
-    except Exception as e:
-        st.error(f"Error al procesar el informe
+
 
 
 
