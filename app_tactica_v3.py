@@ -23,6 +23,7 @@ animacion = cargar_lottie(lottie_url)
 if animacion:
     st_lottie(animacion, height=220, key="intro")
 
+
 st.write("Subí una planilla Excel con los datos del equipo rival (xG, pases, intercepciones, etc).")
 
 # Validación segura de nombres
