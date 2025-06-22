@@ -17,11 +17,11 @@ def cargar_lottie(url):
         return r.json()
     return None
 
-# Animación de futbolista pateando balón
-lottie_url = "https://assets2.lottiefiles.com/packages/lf20_1pxqjqps.json"
+lottie_url = "https://assets6.lottiefiles.com/packages/lf20_3rwasyjy.json"
 animacion = cargar_lottie(lottie_url)
 if animacion:
-    st_lottie(animacion, height=220, key="intro")
+    st_lottie(animacion, height=220, key="futbol_v2")
+
 
 
 st.write("Subí una planilla Excel con los datos del equipo rival (xG, pases, intercepciones, etc).")
