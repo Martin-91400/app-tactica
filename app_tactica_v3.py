@@ -128,6 +128,10 @@ st.markdown(
     "</div>",
     unsafe_allow_html=True
 )
+st.subheader("⬇️ Exportar informe en PDF")
+...
+href = f'<a href="data:application/pdf;base64,{b64}" download="informe_{seleccionado_eq}.pdf">📥 Descargar PDF</a>'
+st.markdown(href, unsafe_allow_html=True)
 
 
 
