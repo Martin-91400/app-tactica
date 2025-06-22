@@ -17,7 +17,7 @@ def cargar_lottie(url):
         return r.json()
     return None
 
-# Nueva animación de fútbol: jugador pateando la pelota
+# Animación de futbolista pateando balón
 lottie_url = "https://assets2.lottiefiles.com/packages/lf20_1pxqjqps.json"
 animacion = cargar_lottie(lottie_url)
 if animacion:
@@ -119,7 +119,7 @@ if archivo_grafico:
 else:
     st.info("Esperando archivo para generar gráficos.")
 
-# Footer
+# Footer personalizado
 st.markdown("---")
 st.markdown(
     "<div style='text-align: center; font-size: 0.85em; color: gray;'>"
