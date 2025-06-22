@@ -4,23 +4,22 @@ import numpy as np
 import matplotlib.pyplot as plt
 import plotly.graph_objects as go
 import re
+import streamlit.components.v1 as components
 
-
+# Configuración inicial
 st.set_page_config(page_title="Informe Táctico", layout="centered")
 st.title("⚽ Informe de Rendimiento del Rival")
 
-import streamlit.components.v1 as components
-
-st.markdown("## 🎉 Celebración deportiva")
+# Animación visual de apertura (alternativa embebida que funciona)
+st.markdown("## 🎉 Visualización deportiva")
 
 iframe_code = '''
-<iframe src="https://lottie.host/embed/3d849dce-1a78-41fb-a7b4-e37c8999949e/NtrYZynZdv.html"
+<iframe src="https://lottie.host/embed/8a7260e0-bf1a-4ce2-9ba1-592d27e7092f/hXrxquNdfv.html"
         style="width:100%; height:300px; border:none;" allowfullscreen></iframe>
 '''
 components.html(iframe_code, height=300)
 
-  
-
+# Instrucción inicial
 st.write("Subí una planilla Excel con los datos del equipo rival (xG, pases, intercepciones, etc).")
 
 # Validación segura de nombres
