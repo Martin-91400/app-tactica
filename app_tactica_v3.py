@@ -12,10 +12,12 @@ st.title("⚽ Informe de Rendimiento del Rival")
 
 # Función para cargar animaciones Lottie
 def cargar_lottie(url):
+    import requests
     r = requests.get(url)
     if r.status_code == 200:
         return r.json()
     return None
+
 
 # Animación 2: visualización de datos deportivos
 lottie_url_2 = "https://assets7.lottiefiles.com/packages/lf20_1pxqjqps.json"
