@@ -6,29 +6,23 @@ import plotly.graph_objects as go
 import re
 import requests
 from streamlit_lottie import st_lottie
-import streamlit.components.v1 as components
 
-# Función para cargar Lottie animaciones
+st.set_page_config(page_title="Informe Táctico", layout="centered")
+st.title("⚽ Informe de Rendimiento del Rival")
+
+# Función para cargar animaciones Lottie
 def cargar_lottie(url):
     r = requests.get(url)
     if r.status_code == 200:
         return r.json()
-    return None  # ✅ sangría corregida
+    return None
 
-# Configuración inicial
-st.set_page_config(page_title="Informe Táctico", layout="centered")
-st.title("⚽ Informe de Rendimiento del Rival")
+# Nueva animación de fútbol: jugador pateando la pelota
+lottie_url = "https://assets2.lottiefiles.com/packages/lf20_1pxqjqps.json"
+animacion = cargar_lottie(lottie_url)
+if animacion:
+    st_lottie(animacion, height=220, key="intro")
 
-# Animación embebida desde LottieFiles
-iframe_code = '''
-<iframe src="https://lottie.host/embed/3d849dce-1a78-41fb-a7b4-e37c8999949e/NtrYZynZdv.html"
-        style="width:100%; height:300px; border:none;" allowfullscreen></iframe>
-'''
-components.html(iframe_code, height=300)
-
-
-
-# Texto inicial
 st.write("Subí una planilla Excel con los datos del equipo rival (xG, pases, intercepciones, etc).")
 
 # Validación segura de nombres
@@ -133,7 +127,6 @@ st.markdown(
     "</div>",
     unsafe_allow_html=True
 )
-
 
 
 
