@@ -1,10 +1,13 @@
 streamlit
 pandas
+numpy
 matplotlib
 plotly
+xhtml2pdf
 openpyxl
 streamlit-lottie
 requests
+
 
 
 
