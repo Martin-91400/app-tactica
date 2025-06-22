@@ -1,4 +1,3 @@
-# Tu código comienza acá
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -13,7 +12,7 @@ import tempfile
 import base64
 import os
 
-# --- Animación Lottie decorativa arriba del título ---
+# --- Animación Lottie decorativa ---
 def cargar_lottie(url):
     r = requests.get(url)
     if r.status_code != 200:
@@ -24,12 +23,11 @@ lottie_url = "https://assets10.lottiefiles.com/packages/lf20_49rdyysj.json"
 animacion = cargar_lottie(lottie_url)
 st_lottie(animacion, speed=1, width=700, height=300, loop=True)
 
-# Configuración de página y título
 st.set_page_config(page_title="Informe Táctico", layout="centered")
 st.title("⚽ Informe de Rendimiento del Rival")
 st.write("Subí una planilla Excel con los datos del equipo rival (xG, pases, intercepciones, etc).")
 
-# Validación segura de nombres
+# Validación de nombres
 def es_nombre_valido(nombre):
     patron = r"^[a-zA-ZáéíóúÁÉÍÓÚüÜñÑ\s\-]{1,40}$"
     return re.match(patron, nombre)
@@ -38,7 +36,7 @@ def registrar_sospecha(valor):
     with open("log_segu.txt", "a") as log:
         log.write(f"Input sospechoso: {valor}\n")
 
-# Sección 1: Informe táctico
+# Informe del rival
 archivo_rival = st.file_uploader("📂 Cargar archivo Excel", type="xlsx", key="rival")
 if archivo_rival:
     try:
@@ -79,8 +77,7 @@ if archivo_rival:
         st.error(f"Error al procesar el archivo: {e}")
 else:
     st.info("Esperando que cargues la planilla del rival.")
-
-# Sección 2: Gráficos
+# Sección 2: Creador de Gráficos Estadísticos
 st.header("📊 Creador de Gráficos Estadísticos")
 archivo_grafico = st.file_uploader("📂 Subí tu archivo de datos (CSV o Excel)", type=["csv", "xlsx"], key="graficos")
 
@@ -134,7 +131,7 @@ if archivo_propio:
             datos_eq = df_propio[df_propio['Jugador'] == seleccionado_eq]
             st.write(datos_eq)
 
-            # Radar propio
+            # Radar del propio jugador
             datos_row = datos_eq.iloc[0]
             categorias_eq = ['xG', 'Pases', 'Minutos', 'Intercepciones']
             valores_eq = [datos_row[c] for c in categorias_eq]
@@ -151,7 +148,7 @@ if archivo_propio:
             ax_eq.set_title(f"Radar de {seleccionado_eq}", size=14)
             st.pyplot(fig_eq)
 
-            # Generar HTML para el PDF
+            # Generar informe en HTML
             html_pdf = f"""
             <html>
             <head>
@@ -172,6 +169,7 @@ if archivo_propio:
             </html>
             """
 
+            # Generar PDF con pdfkit
             with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmpfile:
                 pdfkit.from_string(html_pdf, tmpfile.name)
 
@@ -179,6 +177,26 @@ if archivo_propio:
                 with open(tmpfile.name, "rb") as pdf_file:
                     b64 = base64.b64encode(pdf_file.read()).decode('utf-8')
                     st.subheader("⬇️ Exportar informe en PDF")
+                    st.markdown(
+                        f'<a href="data:application/pdf;base64,{b64}" download="informe_{seleccionado_eq}.pdf">📥 Descargar PDF</a>',
+                        unsafe_allow_html=True
+                    )
+            else:
+                st.error("No se pudo generar el archivo PDF.")
+    except Exception as e:
+        st.error(f"Error al procesar el informe: {e}")
+else:
+    st.info("Esperando archivo del equipo propio.")
+
+# Footer final
+st.markdown("---")
+st.markdown(
+    "<div style='text-align: center; font-size: 0.85em; color: gray;'>"
+    "🛡️ App diseñada por <strong>Martin</strong> · Streamlit + Python · 2025"
+    "</div>",
+    unsafe_allow_html=True
+)
+
 
 
 
