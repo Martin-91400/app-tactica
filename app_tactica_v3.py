@@ -4,13 +4,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 import plotly.graph_objects as go
 import re
-import requests
-from streamlit_lottie import st_lottie
-def cargar_lottie(url):
-    r = requests.get(url)
-    if r.status_code == 200:
-        return r.json()
-    return None
 
 
 st.set_page_config(page_title="Informe Táctico", layout="centered")
@@ -26,12 +19,7 @@ iframe_code = '''
 '''
 components.html(iframe_code, height=300)
 
-   
-# Nueva animación de fútbol: jugador pateando la pelota
-lottie_url = "https://assets2.lottiefiles.com/packages/lf20_1pxqjqps.json"
-animacion = cargar_lottie(lottie_url)
-if animacion:
-    st_lottie(animacion, height=220, key="intro")
+  
 
 st.write("Subí una planilla Excel con los datos del equipo rival (xG, pases, intercepciones, etc).")
 
