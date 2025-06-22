@@ -1,4 +1,72 @@
 import streamlit as st
+# Estilos visuales globales para la app
+st.markdown("""
+    <style>
+    /* Importar Google Fonts */
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@600&family=Roboto&display=swap');
+
+    /* Aplicar Roboto al cuerpo, Montserrat a los títulos */
+    html, body, [class*="css"] {
+        font-family: 'Roboto', sans-serif;
+        color: #2c3e50;
+        font-size: 16px;
+    }
+
+    h1, h2, h3 {
+        font-family: 'Montserrat', sans-serif;
+        color: #1f618d;
+    }
+
+    /* Botones personalizados */
+    .stButton>button {
+        background-color: #117A65;
+        color: white;
+        border-radius: 6px;
+        padding: 0.5em 1em;
+        font-weight: bold;
+    }
+
+    .stButton>button:hover {
+        background-color: #148F77;
+        color: #f1f1f1;
+    }
+
+    /* Links */
+    a {
+        color: #1F618D;
+        text-decoration: none;
+    }
+
+    a:hover {
+        text-decoration: underline;
+    }
+
+    /* Tablas */
+    table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    th, td {
+        border: 1px solid #dcdcdc;
+        padding: 6px;
+        text-align: center;
+    }
+
+    th {
+        background-color: #f2f2f2;
+    }
+
+    /* Footer */
+    footer {
+        text-align: center;
+        font-size: 0.85em;
+        color: gray;
+        margin-top: 2em;
+    }
+    </style>
+""", unsafe_allow_html=True)
+
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
