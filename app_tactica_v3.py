@@ -5,14 +5,19 @@ import matplotlib.pyplot as plt
 import plotly.graph_objects as go
 import re
 import streamlit.components.v1 as components
+from streamlit_lottie import st_lottie
+import requests
 
-# Animación embebida (silenciosa, sin controles, arriba del título)
-video_code = '''
-<video autoplay loop muted playsinline style="width:100%; height:300px; object-fit:contain;">
-    <source src="Online_Statistics.mp4" type="video/mp4">
-</video>
-'''
-components.html(video_code, height=300)
+# --- Animación Lottie decorativa arriba del título ---
+def cargar_lottie(url):
+    r = requests.get(url)
+    if r.status_code != 200:
+        return None
+    return r.json()
+
+lottie_url = "https://assets10.lottiefiles.com/packages/lf20_49rdyysj.json"
+animacion = cargar_lottie(lottie_url)
+st_lottie(animacion, speed=1, width=700, height=300, loop=True)
 
 # Configuración de página y título
 st.set_page_config(page_title="Informe Táctico", layout="centered")
@@ -123,6 +128,7 @@ st.markdown(
     "</div>",
     unsafe_allow_html=True
 )
+
 
 
 
