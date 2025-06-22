@@ -17,11 +17,12 @@ def cargar_lottie(url):
         return r.json()
     return None
 
-# Animación de estadísticas deportivas
-lottie_url = "https://assets5.lottiefiles.com/packages/lf20_3vbocw.json"
+# Animación de estadísticas dinámicas
+lottie_url = "https://assets7.lottiefiles.com/packages/lf20_xlky4wvx.json"  # Animación activa verificada
 animacion = cargar_lottie(lottie_url)
 if animacion:
-    st_lottie(animacion, height=220, key="stats_sport")
+    st_lottie(animacion, height=240, key="stats_intro")
+
 
 
 
