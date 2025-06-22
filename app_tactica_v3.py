@@ -21,10 +21,11 @@ st.title("⚽ Informe de Rendimiento del Rival")
 
 # Animación embebida desde LottieFiles
 iframe_code = '''
-<iframe src="https://lottie.host/embed/8e75b818-a57c-4233-b819-d44fdc141039/2z3z6q1zqz.html"
+<iframe src="https://lottie.host/embed/3d849dce-1a78-41fb-a7b4-e37c8999949e/NtrYZynZdv.html"
         style="width:100%; height:300px; border:none;" allowfullscreen></iframe>
 '''
 components.html(iframe_code, height=300)
+
 
 # Animación secundaria (solo si querés usarla)
 lottie_url_2 = "https://assets7.lottiefiles.com/packages/lf20_1pxqjqps.json"
