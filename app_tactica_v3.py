@@ -10,16 +10,11 @@ import streamlit.components.v1 as components
 st.set_page_config(page_title="Informe Táctico", layout="centered")
 st.title("⚽ Informe de Rendimiento del Rival")
 
-# Animación visual de apertura (alternativa embebida que funciona)
-st.markdown("## 🎉 Visualización deportiva")
+# 🎬 Animación de apertura: video local (estable y sin servidores externos)
+st.markdown("## 🎉 Celebración deportiva")
+st.video("Online Statistics.mp4")
 
-iframe_code = '''
-<iframe src="https://lottie.host/embed/8a7260e0-bf1a-4ce2-9ba1-592d27e7092f/hXrxquNdfv.html"
-        style="width:100%; height:300px; border:none;" allowfullscreen></iframe>
-'''
-components.html(iframe_code, height=300)
-
-# Instrucción inicial
+# Instrucción
 st.write("Subí una planilla Excel con los datos del equipo rival (xG, pases, intercepciones, etc).")
 
 # Validación segura de nombres
@@ -124,6 +119,7 @@ st.markdown(
     "</div>",
     unsafe_allow_html=True
 )
+
 
 
 
