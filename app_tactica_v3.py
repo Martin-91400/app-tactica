@@ -6,25 +6,29 @@ import plotly.graph_objects as go
 import re
 import streamlit.components.v1 as components
 
-# Configuración de la página
+# Animación embebida (silenciosa, sin controles, arriba del título)
+video_code = '''
+<video autoplay loop muted playsinline style="width:100%; height:300px; object-fit:contain;">
+    <source src="Online_Statistics.mp4" type="video/mp4">
+</video>
+'''
+components.html(video_code, height=300)
+
+# Configuración de página y título
 st.set_page_config(page_title="Informe Táctico", layout="centered")
 st.title("⚽ Informe de Rendimiento del Rival")
-
-# Animación silenciosa embebida (sin texto)
-st.video("Online_Statistics.mp4")
-
 
 # Instrucción inicial
 st.write("Subí una planilla Excel con los datos del equipo rival (xG, pases, intercepciones, etc).")
 
-# Validación de nombres
+# Validación segura de nombres
 def es_nombre_valido(nombre):
-    patron = r"^[a-zA-ZáéíóúÁÉÍÓÚüÜñÑ\s\\-]{1,40}$"
+    patron = r"^[a-zA-ZáéíóúÁÉÍÓÚüÜñÑ\s\-]{1,40}$"
     return re.match(patron, nombre)
 
 def registrar_sospecha(valor):
     with open("log_segu.txt", "a") as log:
-        log.write(f"Input sospechoso: {valor}\\n")
+        log.write(f"Input sospechoso: {valor}\n")
 
 # Sección 1: Informe táctico
 archivo_rival = st.file_uploader("📂 Cargar archivo Excel", type="xlsx", key="rival")
@@ -119,6 +123,7 @@ st.markdown(
     "</div>",
     unsafe_allow_html=True
 )
+
 
 
 
