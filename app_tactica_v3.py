@@ -11,12 +11,8 @@ st.set_page_config(page_title="Informe Táctico", layout="centered")
 st.title("⚽ Informe de Rendimiento del Rival")
 
 # Animación silenciosa embebida (sin texto)
-video_code = '''
-<video autoplay loop muted playsinline style="width:100%; height:300px; object-fit:contain;">
-    <source src="Online_Statistics.mp4" type="video/mp4">
-</video>
-'''
-components.html(video_code, height=300)
+st.video("Online_Statistics.mp4")
+
 
 # Instrucción inicial
 st.write("Subí una planilla Excel con los datos del equipo rival (xG, pases, intercepciones, etc).")
