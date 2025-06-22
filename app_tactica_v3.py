@@ -1,14 +1,8 @@
 import streamlit as st
-import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
-import plotly.graph_objects as go
-import re
-import requests
 from streamlit_lottie import st_lottie
-
-st.set_page_config(page_title="Informe Táctico", layout="centered")
-st.title("⚽ Informe de Rendimiento del Rival")
+import pandas as pd
+import plotly.express as px
+import requests
 
 # Función para cargar animaciones Lottie
 def cargar_lottie(url):
@@ -17,124 +11,62 @@ def cargar_lottie(url):
         return r.json()
     return None
 
-# Animación verificada: gráficos animados
-lottie_url = "https://assets2.lottiefiles.com/packages/lf20_eeuhzwyh.json"
-animacion = cargar_lottie(lottie_url)
-if animacion:
-    st_lottie(animacion, height=240, key="stats_ok")
+# Configuración de la página
+st.set_page_config(page_title="Informe Táctico", layout="wide")
+st.title("📊 Informe de Rendimiento del Rival")
+
+# Animación 1: Introducción con gráfico dinámico
+lottie_url_1 = "https://assets2.lottiefiles.com/packages/lf20_lrrvuhwz.json"
+animacion_1 = cargar_lottie(lottie_url_1)
+if animacion_1:
+    st_lottie(animacion_1, height=240, key="intro_1")
 else:
-    st.warning("⚠️ No se pudo cargar la animación.")
+    st.warning("⚠️ No se pudo cargar la animación 1.")
 
-
-
-
-
-
-
-st.write("Subí una planilla Excel con los datos del equipo rival (xG, pases, intercepciones, etc).")
-
-# Validación segura de nombres
-def es_nombre_valido(nombre):
-    patron = r"^[a-zA-ZáéíóúÁÉÍÓÚüÜñÑ\s\-]{1,40}$"
-    return re.match(patron, nombre)
-
-def registrar_sospecha(valor):
-    with open("log_segu.txt", "a") as log:
-        log.write(f"Input sospechoso: {valor}\n")
-
-# Sección 1: Informe táctico
-archivo_rival = st.file_uploader("📂 Cargar archivo Excel", type="xlsx", key="rival")
-
-if archivo_rival:
-    try:
-        df_rival = pd.read_excel(archivo_rival)
-        jugadores = df_rival['Jugador'].dropna().unique().tolist()
-        jugadores_validos = [j for j in jugadores if es_nombre_valido(j)]
-
-        if not jugadores_validos:
-            st.error("Ningún nombre de jugador pasó la validación.")
-        else:
-            seleccionado = st.selectbox("🎯 Elegí un jugador", jugadores_validos)
-
-            if not es_nombre_valido(seleccionado):
-                st.warning("Nombre inválido.")
-                registrar_sospecha(seleccionado)
-                st.stop()
-
-            st.subheader(f"📌 Detalle de {seleccionado}")
-            st.write(df_rival[df_rival['Jugador'] == seleccionado])
-
-            # Radar individual del jugador
-            datos = df_rival[df_rival['Jugador'] == seleccionado].iloc[0]
-            categorias = ['xG', 'Pases', 'Minutos', 'Intercepciones']
-            valores = [datos[c] for c in categorias]
-            maximos = [df_rival[c].max() for c in categorias]
-            valores_norm = [v / m if m != 0 else 0 for v, m in zip(valores, maximos)]
-            valores_norm += valores_norm[:1]
-            etiquetas = categorias
-            num_vars = len(etiquetas)
-            angulos = np.linspace(0, 2 * np.pi, num_vars, endpoint=False).tolist()
-            angulos += angulos[:1]
-
-            fig, ax = plt.subplots(figsize=(5, 5), subplot_kw=dict(polar=True))
-            ax.plot(angulos, valores_norm, color='green', linewidth=2)
-            ax.fill(angulos, valores_norm, color='lime', alpha=0.4)
-            ax.set_thetagrids(np.degrees(angulos[:-1]), etiquetas)
-            ax.set_title(f"Radar de {seleccionado}", size=14)
-            st.pyplot(fig)
-
-    except Exception as e:
-        st.error(f"Error al procesar el archivo: {e}")
-else:
-    st.info("Esperando que cargues la planilla del rival.")
-
-# Sección 2: Creador de gráficos
-st.header("📊 Creador de Gráficos Estadísticos")
-archivo_grafico = st.file_uploader("📂 Subí tu archivo de datos (CSV o Excel)", type=["csv", "xlsx"], key="graficos")
-
-if archivo_grafico:
-    try:
-        if archivo_grafico.name.endswith(".csv"):
-            df = pd.read_csv(archivo_grafico)
-        else:
-            df = pd.read_excel(archivo_grafico)
-
-        st.write("Vista previa:", df.head())
-        columnas = df.select_dtypes(include='number').columns.tolist()
-        seleccionadas = st.multiselect("Seleccioná columnas para graficar", columnas)
-        tipo = st.selectbox("Tipo de gráfico", ["Barras", "Línea", "Radar"])
-
-        if tipo == "Barras":
-            st.bar_chart(df[seleccionadas])
-        elif tipo == "Línea":
-            st.line_chart(df[seleccionadas])
-        elif tipo == "Radar":
-            if len(seleccionadas) >= 3:
-                fig = go.Figure()
-                for i in range(len(df)):
-                    fig.add_trace(go.Scatterpolar(
-                        r=df.loc[i, seleccionadas].values,
-                        theta=seleccionadas,
-                        fill='toself',
-                        name=f"Fila {i+1}"
-                    ))
-                fig.update_layout(polar=dict(radialaxis=dict(visible=True)))
-                st.plotly_chart(fig)
-            else:
-                st.warning("Seleccioná al menos 3 columnas para radar.")
-    except Exception as e:
-        st.error(f"Error al procesar los datos: {e}")
-else:
-    st.info("Esperando archivo para generar gráficos.")
-
-# Footer
+# Separador
 st.markdown("---")
-st.markdown(
-    "<div style='text-align: center; font-size: 0.85em; color: gray;'>"
-    "🛡️ App diseñada por <strong>Martin</strong> · Streamlit + Python · 2025"
-    "</div>",
-    unsafe_allow_html=True
-)
+
+# Animación 2: Acción táctica deportiva
+lottie_url_2 = "https://assets7.lottiefiles.com/packages/lf20_1pxqjqps.json"
+animacion_2 = cargar_lottie(lottie_url_2)
+if animacion_2:
+    st_lottie(animacion_2, height=240, key="intro_2")
+else:
+    st.warning("⚠️ No se pudo cargar la animación 2.")
+
+# Cargar archivo Excel
+archivo = st.file_uploader("📁 Subí el archivo Excel con los datos del rival", type=["xlsx"])
+if archivo is not None:
+    df = pd.read_excel(archivo)
+
+    st.subheader("📋 Vista previa de los datos")
+    st.dataframe(df)
+
+    # Gráfico de radar si hay columnas adecuadas
+    if 'Jugador' in df.columns:
+        columnas_numericas = df.select_dtypes(include=['float64', 'int64']).columns.tolist()
+        opciones = st.multiselect("Seleccioná hasta 6 estadísticas para comparar", columnas_numericas, max_selections=6)
+
+        if len(opciones) > 1:
+            jugador_seleccionado = st.selectbox("Seleccioná un jugador", df['Jugador'].unique())
+            datos_jugador = df[df['Jugador'] == jugador_seleccionado][opciones].values.flatten().tolist()
+
+            df_radar = pd.DataFrame(dict(
+                r=datos_jugador + [datos_jugador[0]],
+                theta=opciones + [opciones[0]]
+            ))
+
+            st.subheader(f"📈 Radar de rendimiento: {jugador_seleccionado}")
+            fig = px.line_polar(df_radar, r='r', theta='theta', line_close=True,
+                                template="plotly_dark", line_shape="spline")
+            fig.update_traces(fill='toself')
+            st.plotly_chart(fig, use_container_width=True)
+        else:
+            st.info("⚠️ Seleccioná al menos 2 estadísticas para armar el radar.")
+    else:
+        st.error("❌ La tabla no contiene una columna llamada 'Jugador'.")
+
+
 
 
 
