@@ -27,11 +27,6 @@ iframe_code = '''
 components.html(iframe_code, height=300)
 
 
-# Animación secundaria (solo si querés usarla)
-lottie_url_2 = "https://assets7.lottiefiles.com/packages/lf20_1pxqjqps.json"
-animacion_2 = cargar_lottie(lottie_url_2)
-if animacion_2:
-    st_lottie(animacion_2, height=240, key="anim_2")
 
 # Texto inicial
 st.write("Subí una planilla Excel con los datos del equipo rival (xG, pases, intercepciones, etc).")
