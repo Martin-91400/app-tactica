@@ -17,13 +17,10 @@ def cargar_lottie(url):
         return r.json()
     return None
 
-# Animación de gráficos en movimiento
-lottie_url = "https://assets6.lottiefiles.com/packages/lf20_2kscqlmi.json"
+lottie_url = "https://assets3.lottiefiles.com/private_files/lf30_editor_6ghyceol.json"
 animacion = cargar_lottie(lottie_url)
 if animacion:
-    st_lottie(animacion, height=220, key="graficos_dinamicos")
-
-
+    st_lottie(animacion, height=220, key="graficos_alt")
 
 
 st.write("Subí una planilla Excel con los datos del equipo rival (xG, pases, intercepciones, etc).")
@@ -122,7 +119,7 @@ if archivo_grafico:
 else:
     st.info("Esperando archivo para generar gráficos.")
 
-# Footer personalizado
+# Footer
 st.markdown("---")
 st.markdown(
     "<div style='text-align: center; font-size: 0.85em; color: gray;'>"
@@ -130,8 +127,6 @@ st.markdown(
     "</div>",
     unsafe_allow_html=True
 )
-
-
 
 
 
