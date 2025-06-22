@@ -10,12 +10,19 @@ from streamlit_lottie import st_lottie
 st.set_page_config(page_title="Informe Táctico", layout="centered")
 st.title("⚽ Informe de Rendimiento del Rival")
 
-# Función para cargar animaciones Lottie
-def cargar_lottie(url):
-    import requests
-    r = requests.get(url)
-    if r.status_code == 200:
-        return r.json()
+import streamlit as st
+import streamlit.components.v1 as components
+
+st.set_page_config(page_title="Animación embebida", layout="centered")
+st.title("📊 Visualización deportiva embebida")
+
+# Animación embebida desde LottieFiles (funciona sin requests)
+iframe_code = '''
+<iframe src="https://lottie.host/embed/8e75b818-a57c-4233-b819-d44fdc141039/2z3z6q1zqz.html"
+        style="width:100%; height:300px; border:none;" allowfullscreen></iframe>
+'''
+components.html(iframe_code, height=300)
+
     return None
 
 
