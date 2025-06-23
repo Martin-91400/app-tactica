@@ -36,14 +36,12 @@ if not st.session_state.authenticated:
 if not st.session_state.authenticated:
     st.stop()
 
-# --- SESIÓN ABIERTA: OPCIÓN PARA CERRAR SESIÓN ---
-if st.session_state.authenticated:
-    if st.sidebar.button("🚪 Cerrar sesión", key="logout_button"):
-        st.session_state.authenticated = False
-        st.rerun()
-
-
 # --- DESDE ACÁ EMPIEZA EL CONTENIDO PRINCIPAL PROTEGIDO ---
+
+# --- OPCIÓN DE CIERRE DE SESIÓN EN LA BARRA LATERAL ---
+if st.sidebar.button("🚪 Cerrar sesión", key="logout_button"):
+    st.session_state.authenticated = False
+    st.rerun()
 
 # --- ANIMACIÓN LOTTIE INICIAL ---
 def cargar_lottie(url):
@@ -57,78 +55,6 @@ st_lottie(animacion, speed=1, width=700, height=300, loop=True)
 # --- TÍTULO PRINCIPAL ---
 st.title("⚽ Informe de Rendimiento del Rival")
 
-
-
-    
-    
-
-
-
-
-# --- ESTILOS VISUALES ---
-st.markdown("""
-    <style>
-    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@600&family=Roboto&display=swap');
-
-    html, body, [class*="css"] {
-        font-family: 'Roboto', sans-serif;
-        color: #2c3e50;
-        font-size: 16px;
-    }
-    h1, h2, h3 {
-        font-family: 'Montserrat', sans-serif;
-        color: #1f618d;
-    }
-    .stButton>button {
-        background-color: #117A65;
-        color: white;
-        border-radius: 6px;
-        padding: 0.5em 1em;
-        font-weight: bold;
-    }
-    .stButton>button:hover {
-        background-color: #148F77;
-        color: #f1f1f1;
-    }
-    a {
-        color: #1F618D;
-        text-decoration: none;
-    }
-    a:hover {
-        text-decoration: underline;
-    }
-    table {
-        border-collapse: collapse;
-        width: 100%;
-    }
-    th, td {
-        border: 1px solid #dcdcdc;
-        padding: 6px;
-        text-align: center;
-    }
-    th {
-        background-color: #f2f2f2;
-    }
-    </style>
-""", unsafe_allow_html=True)
-
-# --- ANIMACIÓN INICIAL ---
-def cargar_lottie(url):
-    r = requests.get(url)
-    return r.json() if r.status_code == 200 else None
-
-lottie_url = "https://assets10.lottiefiles.com/packages/lf20_49rdyysj.json"
-animacion = cargar_lottie(lottie_url)
-st_lottie(animacion, speed=1, width=700, height=300, loop=True)
-
-# --- TÍTULO PRINCIPAL ---
-st.title("⚽ Informe de Rendimiento del Rival")
-
-
-# --- BOTÓN: Cerrar sesión desde la barra lateral ---
-if st.sidebar.button("🚪 Cerrar sesión"):
-    st.session_state.authenticated = False
-    st.rerun()
 
 
 
