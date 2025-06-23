@@ -5,9 +5,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 import plotly.graph_objects as go
 import re
-from streamlit_lottie import st_lottie
+from streamlit_lottie import st_lottie # type: ignore
 import requests
-from xhtml2pdf import pisa
+from xhtml2pdf import pisa # type: ignore
 import base64
 import tempfile
 import gc  # Garbage collector
