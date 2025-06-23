@@ -32,18 +32,7 @@ if not st.session_state.authenticated:
 
 
 
-if not st.session_state.authenticated:
-    st.set_page_config(page_title="Informe Táctico", layout="centered")
-    st.title("🔐 Ingreso seguro")
-    pwd = st.text_input("Ingresá la contraseña para acceder a la app", type="password", key="auth_pwd")
 
-    if pwd == PASSWORD: # type: ignore
-        st.session_state.authenticated = True
-        st.success("Acceso concedido. ¡Bienvenido!")
-        st.stop()
-    elif pwd:
-        st.error("Contraseña incorrecta. Intentá de nuevo.")
-        st.stop()
 
 # --- ESTILOS VISUALES ---
 st.markdown("""
@@ -103,6 +92,13 @@ st_lottie(animacion, speed=1, width=700, height=300, loop=True)
 
 # --- TÍTULO PRINCIPAL ---
 st.title("⚽ Informe de Rendimiento del Rival")
+
+
+# --- BOTÓN: Cerrar sesión desde la barra lateral ---
+if st.sidebar.button("🚪 Cerrar sesión"):
+    st.session_state.authenticated = False
+    st.experimental_rerun()
+
 
 # --- FUNCIONES ÚTILES ---
 def es_nombre_valido(nombre):
