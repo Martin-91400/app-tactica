@@ -17,18 +17,18 @@ if "authenticated" not in st.session_state:
     st.session_state.authenticated = False
 
 if not st.session_state.authenticated:
-    if not st.session_state.authenticated:
     st.title("🔐 Ingreso seguro")
     pwd = st.text_input("Ingresá la contraseña para acceder a la app", type="password")
-    
+
     if pwd == PASSWORD:
         st.session_state.authenticated = True
         st.success("Acceso concedido. ¡Bienvenido!")
         st.stop()
-    
+
     elif pwd:
         st.error("Contraseña incorrecta. Intentá de nuevo.")
         st.stop()
+
 
 
 # --- Estilos visuales ---
