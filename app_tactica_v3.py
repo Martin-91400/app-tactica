@@ -11,9 +11,10 @@ from xhtml2pdf import pisa # type: ignore
 import base64
 import tempfile
 import gc  # Garbage collector
-# --- Autenticación segura ---
+# --- CONTRASEÑA DE ACCESO ---
 PASSWORD = "fútbol2025"
 
+# --- AUTENTICACIÓN ---
 if "authenticated" not in st.session_state:
     st.session_state.authenticated = False
 
@@ -25,10 +26,34 @@ if not st.session_state.authenticated:
     if pwd == PASSWORD:
         st.session_state.authenticated = True
         st.success("Acceso concedido. ¡Bienvenido!")
-        st.rerun()  # 🔁 Recarga para mostrar la app
+        st.rerun()  # ✅ Recarga para mostrar la app
     elif pwd:
         st.error("Contraseña incorrecta. Intentá de nuevo.")
         st.stop()
+
+# --- SI NO ESTÁ AUTENTICADO, NO SIGUE ---
+if not st.session_state.authenticated:
+    st.stop()
+
+# --- CIERRE DE SESIÓN (solo se muestra si ya accediste) ---
+if st.sidebar.button("🚪 Cerrar sesión"):
+    st.session_state.authenticated = False
+    st.rerun()
+
+# ⬇️ Todo el contenido principal va desde acá en adelante
+
+# --- ANIMACIÓN INICIAL ---
+def cargar_lottie(url):
+    r = requests.get(url)
+    return r.json() if r.status_code == 200 else None
+
+lottie_url = "https://assets10.lottiefiles.com/packages/lf20_49rdyysj.json"
+animacion = cargar_lottie(lottie_url)
+st_lottie(animacion, speed=1, width=700, height=300, loop=True)
+
+# --- TÍTULO PRINCIPAL ---
+st.title("⚽ Informe de Rendimiento del Rival")
+
 
     
     
