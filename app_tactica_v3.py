@@ -1,9 +1,18 @@
 import streamlit as st
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import plotly.graph_objects as go
+import re
+from streamlit_lottie import st_lottie
+import requests
+from xhtml2pdf import pisa
+import base64
+import tempfile
+import gc  # Garbage collector
 
-# Configurás una contraseña segura
-PASSWORD = "fútbol2025"  # Reemplazá esto por tu propia contraseña segura
-
-# Autenticación básica
+# --- Autenticación ---
+PASSWORD = "fútbol2025"
 if "authenticated" not in st.session_state:
     st.session_state.authenticated = False
 
@@ -18,13 +27,11 @@ if not st.session_state.authenticated:
         st.error("Contraseña incorrecta. Intentá de nuevo.")
     st.stop()
 
-# Estilos visuales globales para la app
+# --- Estilos visuales ---
 st.markdown("""
     <style>
-    /* Importar Google Fonts */
     @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@600&family=Roboto&display=swap');
 
-    /* Aplicar Roboto al cuerpo, Montserrat a los títulos */
     html, body, [class*="css"] {
         font-family: 'Roboto', sans-serif;
         color: #2c3e50;
@@ -36,7 +43,6 @@ st.markdown("""
         color: #1f618d;
     }
 
-    /* Botones personalizados */
     .stButton>button {
         background-color: #117A65;
         color: white;
@@ -50,7 +56,6 @@ st.markdown("""
         color: #f1f1f1;
     }
 
-    /* Links */
     a {
         color: #1F618D;
         text-decoration: none;
@@ -60,7 +65,6 @@ st.markdown("""
         text-decoration: underline;
     }
 
-    /* Tablas */
     table {
         border-collapse: collapse;
         width: 100%;
@@ -75,51 +79,33 @@ st.markdown("""
     th {
         background-color: #f2f2f2;
     }
-
-    /* Footer */
-    footer {
-        text-align: center;
-        font-size: 0.85em;
-        color: gray;
-        margin-top: 2em;
-    }
     </style>
 """, unsafe_allow_html=True)
-
-import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
-import plotly.graph_objects as go
-import re
-from streamlit_lottie import st_lottie
-import requests
-from xhtml2pdf import pisa
-import base64
-import tempfile
 
 # --- Animación Lottie decorativa ---
 def cargar_lottie(url):
     r = requests.get(url)
-    if r.status_code != 200:
-        return None
-    return r.json()
+    return r.json() if r.status_code == 200 else None
 
 lottie_url = "https://assets10.lottiefiles.com/packages/lf20_49rdyysj.json"
 animacion = cargar_lottie(lottie_url)
 st_lottie(animacion, speed=1, width=700, height=300, loop=True)
 
-# Página
+# --- Configuración inicial de página ---
 st.set_page_config(page_title="Informe Táctico", layout="centered")
 st.title("⚽ Informe de Rendimiento del Rival")
 
-# Validación
+# --- Validación de nombres ---
 def es_nombre_valido(nombre):
     patron = r"^[a-zA-ZáéíóúÁÉÍÓÚüÜñÑ\s\-]{1,40}$"
     return re.match(patron, nombre)
 
-# Sección 1: Informe del Rival
+# --- Aviso de privacidad antes del archivo ---
+st.warning("🔒 Los archivos no se guardan en el servidor. Asegurate de no incluir datos personales sensibles.")
+# --- Sección 1: Informe del Rival ---
 archivo_rival = st.file_uploader("📂 Subí archivo Excel del equipo rival", type="xlsx", key="rival")
 if archivo_rival:
+    st.warning("📌 Los datos no se guardan. No incluyas información sensible.")
     try:
         df_rival = pd.read_excel(archivo_rival)
         jugadores = df_rival['Jugador'].dropna().unique().tolist()
@@ -148,42 +134,56 @@ if archivo_rival:
             ax.set_thetagrids(np.degrees(angulos[:-1]), categorias)
             ax.set_title(f"Radar de {seleccionado}")
             st.pyplot(fig)
+
+        # Limpieza de variables sensibles
+        del df_rival, archivo_rival, datos, valores, maximos, valores_norm, angulos
+        gc.collect()
+
     except Exception as e:
         st.error(f"Error al procesar el archivo: {e}")
-
-# Sección 2: Creador de Gráficos
+# --- Sección 2: Creador de Gráficos ---
 st.header("📊 Gráficos personalizados")
 archivo_grafico = st.file_uploader("📂 Subí CSV o Excel para graficar", type=["csv", "xlsx"], key="graficos")
 if archivo_grafico:
+    st.warning("📌 Los datos que subas se procesan en memoria y no serán almacenados.")
     try:
         df = pd.read_csv(archivo_grafico) if archivo_grafico.name.endswith(".csv") else pd.read_excel(archivo_grafico)
         st.write("Vista previa:", df.head())
+
         columnas = df.select_dtypes(include='number').columns.tolist()
         seleccionadas = st.multiselect("Seleccioná columnas", columnas)
         tipo = st.selectbox("Tipo de gráfico", ["Barras", "Línea", "Radar"])
 
-        if tipo == "Barras":
-            st.bar_chart(df[seleccionadas])
-        elif tipo == "Línea":
-            st.line_chart(df[seleccionadas])
-        elif tipo == "Radar" and len(seleccionadas) >= 3:
-            fig = go.Figure()
-            for i in range(len(df)):
-                fig.add_trace(go.Scatterpolar(
-                    r=df.loc[i, seleccionadas].values,
-                    theta=seleccionadas,
-                    fill='toself',
-                    name=f"Fila {i+1}"
-                ))
-            fig.update_layout(polar=dict(radialaxis=dict(visible=True)))
-            st.plotly_chart(fig)
+        if seleccionadas:
+            if tipo == "Barras":
+                st.bar_chart(df[seleccionadas])
+            elif tipo == "Línea":
+                st.line_chart(df[seleccionadas])
+            elif tipo == "Radar" and len(seleccionadas) >= 3:
+                fig = go.Figure()
+                for i in range(len(df)):
+                    fig.add_trace(go.Scatterpolar(
+                        r=df.loc[i, seleccionadas].values,
+                        theta=seleccionadas,
+                        fill='toself',
+                        name=f"Fila {i+1}"
+                    ))
+                fig.update_layout(polar=dict(radialaxis=dict(visible=True)))
+                st.plotly_chart(fig)
+        else:
+            st.info("Seleccioná al menos una columna para visualizar.")
+
+        # Limpieza de variables sensibles
+        del df, archivo_grafico, columnas, seleccionadas
+        gc.collect()
+
     except Exception as e:
         st.error(f"Error al graficar: {e}")
-
-# Sección 3: Propio equipo + PDF con xhtml2pdf
+# --- Sección 3: Propio equipo + PDF ---
 st.header("📘 Informe del Equipo Propio")
 archivo_propio = st.file_uploader("📂 Cargá archivo Excel del equipo propio", type="xlsx", key="propio")
 if archivo_propio:
+    st.warning("📌 Recordá que el archivo no se almacena ni se comparte. Solo se usa durante esta sesión.")
     try:
         df_propio = pd.read_excel(archivo_propio)
         jugadores_eq = df_propio['Jugador'].dropna().unique().tolist()
@@ -239,19 +239,17 @@ if archivo_propio:
                     b64 = base64.b64encode(f.read()).decode()
                     href = f'<a href="data:application/pdf;base64,{b64}" download="Informe_{seleccionado_eq}.pdf">📄 Descargar PDF</a>'
                     st.markdown(href, unsafe_allow_html=True)
+        
         else:
             st.error("No hay jugadores válidos.")
+
+        # Limpieza de datos
+        del df_propio, archivo_propio, jugadores_eq, jugadores_eq_validos, seleccionado_eq
+        gc.collect()
+
     except Exception as e:
         st.error(f"Error: {e}")
 
-# Footer
-st.markdown("---")
-st.markdown(
-    "<div style='text-align:center;color:gray;font-size:0.85em;'>"
-    "🛡️ App creada por <b>Martin</b> · Streamlit + Python · 2025"
-    "</div>",
-    unsafe_allow_html=True
-)
 
 
 
