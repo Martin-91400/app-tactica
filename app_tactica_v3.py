@@ -30,8 +30,7 @@ if not st.session_state.authenticated:
         st.error("Contraseña incorrecta. Intentá de nuevo.")
         st.stop()
 
-# --- AUTENTICACIÓN SEGURA ---
-st.session_state.authenticated = False
+
 
 if not st.session_state.authenticated:
     st.set_page_config(page_title="Informe Táctico", layout="centered")
