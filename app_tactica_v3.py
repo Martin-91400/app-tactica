@@ -25,11 +25,13 @@ if not st.session_state.authenticated:
     if pwd == PASSWORD:
         st.session_state.authenticated = True
         st.success("Acceso concedido. ¡Bienvenido!")
-        st.experimental_rerun()  # 🔁 Recarga para mostrar la app
+        st.rerun()  # 🔁 Recarga para mostrar la app
     elif pwd:
         st.error("Contraseña incorrecta. Intentá de nuevo.")
         st.stop()
 
+    
+    
 
 
 
