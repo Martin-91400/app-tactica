@@ -1,4 +1,23 @@
 import streamlit as st
+
+# Configurás una contraseña segura
+PASSWORD = "fútbol2025"  # Reemplazá esto por tu propia contraseña segura
+
+# Autenticación básica
+if "authenticated" not in st.session_state:
+    st.session_state.authenticated = False
+
+if not st.session_state.authenticated:
+    st.title("🔐 Ingreso seguro")
+    pwd = st.text_input("Ingresá la contraseña para acceder a la app", type="password")
+    if pwd == PASSWORD:
+        st.session_state.authenticated = True
+        st.success("Acceso concedido. ¡Bienvenido!")
+        st.experimental_rerun()
+    elif pwd:
+        st.error("Contraseña incorrecta. Intentá de nuevo.")
+    st.stop()
+
 # Estilos visuales globales para la app
 st.markdown("""
     <style>
