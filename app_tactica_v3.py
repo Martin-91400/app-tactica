@@ -11,8 +11,7 @@ from xhtml2pdf import pisa # type: ignore
 import base64
 import tempfile
 import gc  # Garbage collector
-
-# --- AUTENTICACIÓN SEGURA ---
+# --- Autenticación segura ---
 PASSWORD = "fútbol2025"
 
 if "authenticated" not in st.session_state:
@@ -24,6 +23,22 @@ if not st.session_state.authenticated:
     pwd = st.text_input("Ingresá la contraseña para acceder a la app", type="password", key="auth_pwd")
 
     if pwd == PASSWORD:
+        st.session_state.authenticated = True
+        st.success("Acceso concedido. ¡Bienvenido!")
+        st.experimental_rerun()  # 🔁 Recarga para mostrar la app
+    elif pwd:
+        st.error("Contraseña incorrecta. Intentá de nuevo.")
+        st.stop()
+
+# --- AUTENTICACIÓN SEGURA ---
+st.session_state.authenticated = False
+
+if not st.session_state.authenticated:
+    st.set_page_config(page_title="Informe Táctico", layout="centered")
+    st.title("🔐 Ingreso seguro")
+    pwd = st.text_input("Ingresá la contraseña para acceder a la app", type="password", key="auth_pwd")
+
+    if pwd == PASSWORD: # type: ignore
         st.session_state.authenticated = True
         st.success("Acceso concedido. ¡Bienvenido!")
         st.stop()
