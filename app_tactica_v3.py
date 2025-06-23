@@ -20,9 +20,10 @@ if not st.session_state.authenticated:
     st.title("🔐 Ingreso seguro")
     pwd = st.text_input("Ingresá la contraseña para acceder a la app", type="password")
     if pwd == PASSWORD:
-        st.session_state.authenticated = True
-        st.success("Acceso concedido. ¡Bienvenido!")
-        st.experimental_rerun()
+    st.session_state.authenticated = True
+    st.success("Acceso concedido. ¡Bienvenido!")
+    st.stop()  # Esto detiene la ejecución y la app se recarga mostrando el contenido
+
     elif pwd:
         st.error("Contraseña incorrecta. Intentá de nuevo.")
     st.stop()
