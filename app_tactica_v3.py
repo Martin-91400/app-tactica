@@ -37,9 +37,11 @@ if not st.session_state.authenticated:
     st.stop()
 
 # --- SESIÓN ABIERTA: OPCIÓN PARA CERRAR SESIÓN ---
-if st.sidebar.button("🚪 Cerrar sesión"):
-    st.session_state.authenticated = False
-    st.rerun()
+if st.session_state.authenticated:
+    if st.sidebar.button("🚪 Cerrar sesión", key="logout_button"):
+        st.session_state.authenticated = False
+        st.rerun()
+
 
 # --- DESDE ACÁ EMPIEZA EL CONTENIDO PRINCIPAL PROTEGIDO ---
 
