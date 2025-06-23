@@ -1,26 +1,7 @@
+# --- IMPORTACIONES ---
 import streamlit as st
 import pandas as pd
 import numpy as np
-# --- Autenticación segura ---
-PASSWORD = "fútbol2025"  # Cambiá esto por la contraseña que prefieras
-
-if "authenticated" not in st.session_state:
-    st.session_state.authenticated = False
-
-if not st.session_state.authenticated:
-    st.title("🔐 Ingreso seguro")
-   pwd = st.text_input("Ingresá la contraseña para acceder a la app", type="password", key="auth_pwd")
-
-
-    if pwd == PASSWORD:
-        st.session_state.authenticated = True
-        st.success("Acceso concedido. ¡Bienvenido!")
-        st.stop()  # Detiene esta ejecución; en la próxima recarga entra como autenticado
-
-    elif pwd:
-        st.error("Contraseña incorrecta. Intentá de nuevo.")
-        st.stop()
-
 import matplotlib.pyplot as plt
 import plotly.graph_objects as go
 import re
@@ -31,27 +12,26 @@ import base64
 import tempfile
 import gc  # Garbage collector
 
-# --- Autenticación ---
+# --- AUTENTICACIÓN SEGURA ---
 PASSWORD = "fútbol2025"
+
 if "authenticated" not in st.session_state:
     st.session_state.authenticated = False
 
 if not st.session_state.authenticated:
+    st.set_page_config(page_title="Informe Táctico", layout="centered")
     st.title("🔐 Ingreso seguro")
-    pwd = st.text_input("Ingresá la contraseña para acceder a la app", type="password")
+    pwd = st.text_input("Ingresá la contraseña para acceder a la app", type="password", key="auth_pwd")
 
     if pwd == PASSWORD:
         st.session_state.authenticated = True
         st.success("Acceso concedido. ¡Bienvenido!")
         st.stop()
-
     elif pwd:
         st.error("Contraseña incorrecta. Intentá de nuevo.")
         st.stop()
 
-
-
-# --- Estilos visuales ---
+# --- ESTILOS VISUALES ---
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@600&family=Roboto&display=swap');
@@ -61,12 +41,10 @@ st.markdown("""
         color: #2c3e50;
         font-size: 16px;
     }
-
     h1, h2, h3 {
         font-family: 'Montserrat', sans-serif;
         color: #1f618d;
     }
-
     .stButton>button {
         background-color: #117A65;
         color: white;
@@ -74,39 +52,33 @@ st.markdown("""
         padding: 0.5em 1em;
         font-weight: bold;
     }
-
     .stButton>button:hover {
         background-color: #148F77;
         color: #f1f1f1;
     }
-
     a {
         color: #1F618D;
         text-decoration: none;
     }
-
     a:hover {
         text-decoration: underline;
     }
-
     table {
         border-collapse: collapse;
         width: 100%;
     }
-
     th, td {
         border: 1px solid #dcdcdc;
         padding: 6px;
         text-align: center;
     }
-
     th {
         background-color: #f2f2f2;
     }
     </style>
 """, unsafe_allow_html=True)
 
-# --- Animación Lottie decorativa ---
+# --- ANIMACIÓN INICIAL ---
 def cargar_lottie(url):
     r = requests.get(url)
     return r.json() if r.status_code == 200 else None
@@ -115,21 +87,19 @@ lottie_url = "https://assets10.lottiefiles.com/packages/lf20_49rdyysj.json"
 animacion = cargar_lottie(lottie_url)
 st_lottie(animacion, speed=1, width=700, height=300, loop=True)
 
-# --- Configuración inicial de página ---
-st.set_page_config(page_title="Informe Táctico", layout="centered")
+# --- TÍTULO PRINCIPAL ---
 st.title("⚽ Informe de Rendimiento del Rival")
 
-# --- Validación de nombres ---
+# --- FUNCIONES ÚTILES ---
 def es_nombre_valido(nombre):
     patron = r"^[a-zA-ZáéíóúÁÉÍÓÚüÜñÑ\s\-]{1,40}$"
     return re.match(patron, nombre)
 
-# --- Aviso de privacidad antes del archivo ---
-st.warning("🔒 Los archivos no se guardan en el servidor. Asegurate de no incluir datos personales sensibles.")
-# --- Sección 1: Informe del Rival ---
+# --- SECCIÓN 1: INFORME DEL RIVAL ---
+st.warning("🔒 Los archivos no se guardan en el servidor. No incluyas datos personales sensibles.")
 archivo_rival = st.file_uploader("📂 Subí archivo Excel del equipo rival", type="xlsx", key="rival")
+
 if archivo_rival:
-    st.warning("📌 Los datos no se guardan. No incluyas información sensible.")
     try:
         df_rival = pd.read_excel(archivo_rival)
         jugadores = df_rival['Jugador'].dropna().unique().tolist()
@@ -159,17 +129,17 @@ if archivo_rival:
             ax.set_title(f"Radar de {seleccionado}")
             st.pyplot(fig)
 
-        # Limpieza de variables sensibles
         del df_rival, archivo_rival, datos, valores, maximos, valores_norm, angulos
         gc.collect()
 
     except Exception as e:
         st.error(f"Error al procesar el archivo: {e}")
-# --- Sección 2: Creador de Gráficos ---
+
+# --- SECCIÓN 2: GRÁFICOS PERSONALIZADOS ---
 st.header("📊 Gráficos personalizados")
 archivo_grafico = st.file_uploader("📂 Subí CSV o Excel para graficar", type=["csv", "xlsx"], key="graficos")
+
 if archivo_grafico:
-    st.warning("📌 Los datos que subas se procesan en memoria y no serán almacenados.")
     try:
         df = pd.read_csv(archivo_grafico) if archivo_grafico.name.endswith(".csv") else pd.read_excel(archivo_grafico)
         st.write("Vista previa:", df.head())
@@ -197,17 +167,17 @@ if archivo_grafico:
         else:
             st.info("Seleccioná al menos una columna para visualizar.")
 
-        # Limpieza de variables sensibles
         del df, archivo_grafico, columnas, seleccionadas
         gc.collect()
 
     except Exception as e:
         st.error(f"Error al graficar: {e}")
-# --- Sección 3: Propio equipo + PDF ---
+
+# --- SECCIÓN 3: EQUIPO PROPIO + PDF ---
 st.header("📘 Informe del Equipo Propio")
 archivo_propio = st.file_uploader("📂 Cargá archivo Excel del equipo propio", type="xlsx", key="propio")
+
 if archivo_propio:
-    st.warning("📌 Recordá que el archivo no se almacena ni se comparte. Solo se usa durante esta sesión.")
     try:
         df_propio = pd.read_excel(archivo_propio)
         jugadores_eq = df_propio['Jugador'].dropna().unique().tolist()
@@ -236,7 +206,7 @@ if archivo_propio:
             ax_eq.set_title(f"Radar de {seleccionado_eq}")
             st.pyplot(fig_eq)
 
-            # HTML para PDF
+            # --- HTML para PDF ---
             html = f"""
             <html>
             <head><style>
@@ -263,7 +233,7 @@ if archivo_propio:
                     b64 = base64.b64encode(f.read()).decode()
                     href = f'<a href="data:application/pdf;base64,{b64}" download="Informe_{seleccionado_eq}.pdf">📄 Descargar PDF</a>'
                     st.markdown(href, unsafe_allow_html=True)
-        
+
         else:
             st.error("No hay jugadores válidos.")
 
