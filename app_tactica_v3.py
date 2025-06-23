@@ -97,7 +97,8 @@ st.title("⚽ Informe de Rendimiento del Rival")
 # --- BOTÓN: Cerrar sesión desde la barra lateral ---
 if st.sidebar.button("🚪 Cerrar sesión"):
     st.session_state.authenticated = False
-    st.experimental_rerun()
+    st.rerun()
+
 
 
 # --- FUNCIONES ÚTILES ---
