@@ -1,6 +1,25 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
+# --- Autenticación segura ---
+PASSWORD = "fútbol2025"  # Cambiá esto por la contraseña que prefieras
+
+if "authenticated" not in st.session_state:
+    st.session_state.authenticated = False
+
+if not st.session_state.authenticated:
+    st.title("🔐 Ingreso seguro")
+    pwd = st.text_input("Ingresá la contraseña para acceder a la app", type="password")
+
+    if pwd == PASSWORD:
+        st.session_state.authenticated = True
+        st.success("Acceso concedido. ¡Bienvenido!")
+        st.stop()  # Detiene esta ejecución; en la próxima recarga entra como autenticado
+
+    elif pwd:
+        st.error("Contraseña incorrecta. Intentá de nuevo.")
+        st.stop()
+
 import matplotlib.pyplot as plt
 import plotly.graph_objects as go
 import re
