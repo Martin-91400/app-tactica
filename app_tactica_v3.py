@@ -7,22 +7,23 @@ import plotly.graph_objects as go
 import re
 from streamlit_lottie import st_lottie  # type: ignore
 import requests
+import joblib
 from xhtml2pdf import pisa  # type: ignore
 import base64
 import tempfile
-import gc  # Garbage collector
+import gc
 
 # --- CONTRASEÑA DE ACCESO ---
 PASSWORD = "fútbol2025"
 
-# --- CONTROL DE AUTENTICACIÓN ---
+# --- AUTENTICACIÓN ---
 if "authenticated" not in st.session_state:
     st.session_state.authenticated = False
 
 if not st.session_state.authenticated:
     st.set_page_config(page_title="Informe Táctico", layout="centered")
     st.title("🔐 Ingreso seguro")
-    pwd = st.text_input("Ingresá la contraseña para acceder a la app", type="password", key="auth_pwd")
+    pwd = st.text_input("Ingresá la contraseña para acceder a la app", type="password")
 
     if pwd == PASSWORD:
         st.session_state.authenticated = True
@@ -32,18 +33,15 @@ if not st.session_state.authenticated:
         st.error("Contraseña incorrecta. Intentá de nuevo.")
         st.stop()
 
-# --- FRENÁ TODO SI NO ESTÁ AUTENTICADO ---
 if not st.session_state.authenticated:
     st.stop()
 
-# --- DESDE ACÁ EMPIEZA EL CONTENIDO PRINCIPAL PROTEGIDO ---
-
-# --- OPCIÓN DE CIERRE DE SESIÓN EN LA BARRA LATERAL ---
-if st.sidebar.button("🚪 Cerrar sesión", key="logout_button"):
+# --- CIERRE DE SESIÓN ---
+if st.sidebar.button("🚪 Cerrar sesión"):
     st.session_state.authenticated = False
     st.rerun()
 
-# --- ANIMACIÓN LOTTIE INICIAL ---
+# --- ANIMACIÓN INICIAL ---
 def cargar_lottie(url):
     r = requests.get(url)
     return r.json() if r.status_code == 200 else None
@@ -54,11 +52,7 @@ st_lottie(animacion, speed=1, width=700, height=300, loop=True)
 
 # --- TÍTULO PRINCIPAL ---
 st.title("⚽ Informe de Rendimiento del Rival")
-
-
-
-
-# --- FUNCIONES ÚTILES ---
+# --- FUNCIÓN PARA VALIDAR NOMBRES ---
 def es_nombre_valido(nombre):
     patron = r"^[a-zA-ZáéíóúÁÉÍÓÚüÜñÑ\s\-]{1,40}$"
     return re.match(patron, nombre)
@@ -80,7 +74,7 @@ if archivo_rival:
             st.subheader(f"📌 Detalle de {seleccionado}")
             st.write(df_rival[df_rival['Jugador'] == seleccionado])
 
-            # Radar
+            # --- Radar individual ---
             datos = df_rival[df_rival['Jugador'] == seleccionado].iloc[0]
             categorias = ['xG', 'Pases', 'Minutos', 'Intercepciones']
             valores = [datos[c] for c in categorias]
@@ -140,7 +134,6 @@ if archivo_grafico:
 
     except Exception as e:
         st.error(f"Error al graficar: {e}")
-
 # --- SECCIÓN 3: EQUIPO PROPIO + PDF ---
 st.header("📘 Informe del Equipo Propio")
 archivo_propio = st.file_uploader("📂 Cargá archivo Excel del equipo propio", type="xlsx", key="propio")
@@ -157,7 +150,7 @@ if archivo_propio:
             st.subheader(f"📌 Detalle de {seleccionado_eq}")
             st.write(datos_eq)
 
-            # Radar
+            # --- Radar jugador propio ---
             datos_row = datos_eq.iloc[0]
             categorias_eq = ['xG', 'Pases', 'Minutos', 'Intercepciones']
             valores_eq = [datos_row[c] for c in categorias_eq]
@@ -205,23 +198,76 @@ if archivo_propio:
         else:
             st.error("No hay jugadores válidos.")
 
-        # Limpieza de datos
-        del df_propio, archivo_propio, jugadores_eq, jugadores_eq_validos, seleccionado_eq
-        gc.collect()
+    except Exception as e:
+        st.error(f"Error al procesar el archivo del equipo propio: {e}")
+
+    # Limpieza
+    del df_propio, archivo_propio, jugadores_eq, jugadores_eq_validos, seleccionado_eq
+    gc.collect()
+# --- SECCIÓN 4: MODELO PREDICTIVO DE ESTILO Y COMPARATIVA ---
+import plotly.graph_objects as go
+
+st.header("🔮 Predicción y Comparativa de Estilo Táctico")
+
+# Cargar modelo entrenado
+try:
+    modelo_estilo = joblib.load("modelo_estilo.pkl")
+except FileNotFoundError:
+    st.error("❌ No se encontró el archivo 'modelo_estilo.pkl'. Colocalo en la carpeta de la app.")
+    st.stop()
+
+col1, col2 = st.columns(2)
+
+with col1:
+    archivo_rival = st.file_uploader("📂 Subí datos del *equipo rival*", type=["csv", "xlsx"], key="modelo_rival")
+
+with col2:
+    archivo_propio = st.file_uploader("📂 Subí datos del *equipo propio*", type=["csv", "xlsx"], key="modelo_propio")
+
+columnas_necesarias = ['Pases', 'Centros', 'Recuperaciones', 'Posesión', 'Altura']
+
+if archivo_rival and archivo_propio:
+    try:
+        df_rival = pd.read_csv(archivo_rival) if archivo_rival.name.endswith(".csv") else pd.read_excel(archivo_rival)
+        df_propio = pd.read_csv(archivo_propio) if archivo_propio.name.endswith(".csv") else pd.read_excel(archivo_propio)
+
+        if all(col in df_rival.columns for col in columnas_necesarias) and all(col in df_propio.columns for col in columnas_necesarias):
+            X_rival = df_rival[columnas_necesarias]
+            X_propio = df_propio[columnas_necesarias]
+
+            pred_rival = modelo_estilo.predict(X_rival)[0]
+            pred_propio = modelo_estilo.predict(X_propio)[0]
+
+            st.success(f"🟠 Estilo estimado del equipo rival: **{pred_rival}**")
+            st.success(f"🔵 Estilo estimado del equipo propio: **{pred_propio}**")
+
+            fig = go.Figure(go.Bar(
+                x=['Equipo Rival', 'Equipo Propio'],
+                y=[1, 1],
+                marker_color=['orangered', 'royalblue'],
+                text=[pred_rival, pred_propio],
+                textposition="outside"
+            ))
+
+            fig.update_layout(
+                title="📊 Comparativa de Estilos",
+                yaxis=dict(showticklabels=False, showgrid=False),
+                xaxis_title="Equipo",
+                height=300
+            )
+
+            st.plotly_chart(fig)
+
+        else:
+            st.error("⚠️ Archivos incompletos.")
+            faltan_r = [col for col in columnas_necesarias if col not in df_rival.columns]
+            faltan_p = [col for col in columnas_necesarias if col not in df_propio.columns]
+            if faltan_r:
+                st.write(f"Faltan en rival: {', '.join(faltan_r)}")
+            if faltan_p:
+                st.write(f"Faltan en propio: {', '.join(faltan_p)}")
 
     except Exception as e:
-        st.error(f"Error: {e}")
+        st.error(f"🚨 Error al procesar los archivos: {e}")
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+        
