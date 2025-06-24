@@ -228,46 +228,27 @@ columnas_necesarias = ['Pases', 'Centros', 'Recuperaciones', 'Posesión', 'Altur
 
 if archivo_rival and archivo_propio:
     try:
-        df_rival = pd.read_csv(archivo_rival) if archivo_rival.name.endswith(".csv") else pd.read_excel(archivo_rival)
-        df_propio = pd.read_csv(archivo_propio) if archivo_propio.name.endswith(".csv") else pd.read_excel(archivo_propio)
-
-        if all(col in df_rival.columns for col in columnas_necesarias) and all(col in df_propio.columns for col in columnas_necesarias):
-            X_rival = df_rival[columnas_necesarias]
-            X_propio = df_propio[columnas_necesarias]
-
-            pred_rival = modelo_estilo.predict(X_rival)[0]
-            pred_propio = modelo_estilo.predict(X_propio)[0]
-
-            st.success(f"🟠 Estilo estimado del equipo rival: **{pred_rival}**")
-            st.success(f"🔵 Estilo estimado del equipo propio: **{pred_propio}**")
-
-            fig = go.Figure(go.Bar(
-                x=['Equipo Rival', 'Equipo Propio'],
-                y=[1, 1],
-                marker_color=['orangered', 'royalblue'],
-                text=[pred_rival, pred_propio],
-                textposition="outside"
-            ))
-
-            fig.update_layout(
-                title="📊 Comparativa de Estilos",
-                yaxis=dict(showticklabels=False, showgrid=False),
-                xaxis_title="Equipo",
-                height=300
-            )
-
-            st.plotly_chart(fig)
-
+        # Leer archivo rival con manejo de codificación
+        if archivo_rival.name.endswith(".csv"):
+            try:
+                df_rival = pd.read_csv(archivo_rival, encoding='utf-8')
+            except UnicodeDecodeError:
+                df_rival = pd.read_csv(archivo_rival, encoding='latin-1')
         else:
-            st.error("⚠️ Archivos incompletos.")
-            faltan_r = [col for col in columnas_necesarias if col not in df_rival.columns]
-            faltan_p = [col for col in columnas_necesarias if col not in df_propio.columns]
-            if faltan_r:
-                st.write(f"Faltan en rival: {', '.join(faltan_r)}")
-            if faltan_p:
-                st.write(f"Faltan en propio: {', '.join(faltan_p)}")
+            df_rival = pd.read_excel(archivo_rival)
+
+        # Leer archivo propio con manejo de codificación
+        if archivo_propio.name.endswith(".csv"):
+            try:
+                df_propio = pd.read_csv(archivo_propio, encoding='utf-8')
+            except UnicodeDecodeError:
+                df_propio = pd.read_csv(archivo_propio, encoding='latin-1')
+        else:
+            df_propio = pd.read_excel(archivo_propio)
 
     except Exception as e:
         st.error(f"🚨 Error al procesar los archivos: {e}")
+        st.stop()
+
 
         
