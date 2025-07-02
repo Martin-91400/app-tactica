@@ -62,6 +62,21 @@ if not st.session_state.authenticated:
 
 if not st.session_state.authenticated:
     st.stop()
+    # --- LOGO EN APP AUTENTICADA ---
+st.markdown("""
+    <style>
+    .logo-app {
+        position: fixed;
+        top: 15px;
+        left: 15px;
+        z-index: 9999;
+    }
+    </style>
+    <div class="logo-app">
+        <img src="https://raw.githubusercontent.com/Martin-91400/app-tactica/main/Logo%201.png" width="90">
+    </div>
+""", unsafe_allow_html=True)
+
 
 # --- CIERRE DE SESIÓN ---
 if st.sidebar.button("🚪 Cerrar sesión"):
