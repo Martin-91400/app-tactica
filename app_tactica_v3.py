@@ -49,7 +49,7 @@ if not st.session_state.authenticated:
 
 if not st.session_state.authenticated:
     st.stop()
-  # --- LOGO EN APP AUTENTICADA (ajustado: más grande) ---
+  # --- LOGO EN APP AUTENTICADA (responsive para móviles) ---
 st.markdown("""
     <style>
     .logo-app {
@@ -58,11 +58,23 @@ st.markdown("""
         left: 114px;
         z-index: 9999;
     }
+
+    /* Ajustes para pantallas pequeñas */
+    @media (max-width: 768px) {
+        .logo-app {
+            top: 20px;
+            left: 20px;
+        }
+        .logo-app img {
+            width: 80px;
+        }
+    }
     </style>
     <div class="logo-app">
         <img src="https://raw.githubusercontent.com/Martin-91400/app-tactica/main/Logo%201.png" width="115">
     </div>
 """, unsafe_allow_html=True)
+
 
 
 
