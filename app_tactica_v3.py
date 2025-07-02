@@ -22,6 +22,21 @@ st.markdown("""
     }
     </style>
 """, unsafe_allow_html=True)
+# --- LOGO EN ESQUINA SUPERIOR IZQUIERDA ---
+st.markdown("""
+    <style>
+    .logo-container {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        z-index: 100;
+    }
+    </style>
+    <div class="logo-container">
+        <img src="https://raw.githubusercontent.com/Martin-91400/app-tactica/main/Logo%201.png" width="100">
+    </div>
+""", unsafe_allow_html=True)
+
 
 
 # --- CONTRASEÑA DE ACCESO ---
@@ -60,7 +75,6 @@ def cargar_lottie(url):
 lottie_url = "https://assets10.lottiefiles.com/packages/lf20_49rdyysj.json"
 animacion = cargar_lottie(lottie_url)
 st_lottie(animacion, speed=1, width=700, height=300, loop=True)
-st.image("Logo 1.png", width=150)
 st.title("⚽ Informe de Rendimiento del Rival")
 
 # --- TÍTULO PRINCIPAL ---
