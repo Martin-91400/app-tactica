@@ -60,6 +60,8 @@ def cargar_lottie(url):
 lottie_url = "https://assets10.lottiefiles.com/packages/lf20_49rdyysj.json"
 animacion = cargar_lottie(lottie_url)
 st_lottie(animacion, speed=1, width=700, height=300, loop=True)
+st.image("mnt_logo.png", width=150)
+st.title("⚽ Informe de Rendimiento del Rival")
 
 # --- TÍTULO PRINCIPAL ---
 st.title("⚽ Informe de Rendimiento del Rival")
