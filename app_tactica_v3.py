@@ -22,20 +22,7 @@ st.markdown("""
     }
     </style>
 """, unsafe_allow_html=True)
-# --- LOGO EN ESQUINA SUPERIOR IZQUIERDA (ajustado) ---
-st.markdown("""
-    <style>
-    .logo-container {
-        position: fixed;
-        top: 15px;
-        left: 15px;
-        z-index: 9999;
-    }
-    </style>
-    <div class="logo-container">
-        <img src="https://raw.githubusercontent.com/Martin-91400/app-tactica/main/Logo%201.png" width="90">
-    </div>
-""", unsafe_allow_html=True)
+
 
 
 
@@ -68,7 +55,7 @@ st.markdown("""
     .logo-app {
         position: fixed;
         top: 20px;
-        left: 120px;  /* más alejado del sidebar */
+        left: 160px;  /* más alejado del sidebar */
         z-index: 9999;
     }
     </style>
@@ -76,6 +63,7 @@ st.markdown("""
         <img src="https://raw.githubusercontent.com/Martin-91400/app-tactica/main/Logo%201.png" width="85">
     </div>
 """, unsafe_allow_html=True)
+
 
 
 
