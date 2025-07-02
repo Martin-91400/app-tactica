@@ -75,7 +75,8 @@ st.markdown("""
     <div class="logo-app">
         <img src="https://raw.githubusercontent.com/Martin-91400/app-tactica/main/Logo%201.png" width="90">
     </div>
-""", unsafe_allow_html=True)
+""", unsafe_allow_html=True
+
 
 
 # --- CIERRE DE SESIÓN ---
