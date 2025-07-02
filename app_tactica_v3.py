@@ -49,20 +49,21 @@ if not st.session_state.authenticated:
 
 if not st.session_state.authenticated:
     st.stop()
-   # --- LOGO EN APP AUTENTICADA (ajustado para evitar sidebar y botón) ---
+   # --- LOGO EN APP AUTENTICADA (ajustado: más arriba y más grande) ---
 st.markdown("""
     <style>
     .logo-app {
         position: fixed;
-        top: 96px;    /* 2 cm más abajo desde el ajuste anterior */
+        top: 58px;    /* subido 1 cm */
         left: 114px;  /* 3 cm desde el borde izquierdo */
         z-index: 9999;
     }
     </style>
     <div class="logo-app">
-        <img src="https://raw.githubusercontent.com/Martin-91400/app-tactica/main/Logo%201.png" width="85">
+        <img src="https://raw.githubusercontent.com/Martin-91400/app-tactica/main/Logo%201.png" width="100">
     </div>
 """, unsafe_allow_html=True)
+
 
 
 
