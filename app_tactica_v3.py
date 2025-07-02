@@ -60,11 +60,11 @@ def cargar_lottie(url):
 lottie_url = "https://assets10.lottiefiles.com/packages/lf20_49rdyysj.json"
 animacion = cargar_lottie(lottie_url)
 st_lottie(animacion, speed=1, width=700, height=300, loop=True)
-st.image("Logo (2).png", width=150)
+st.image("Logo 1.png", width=150)
 st.title("⚽ Informe de Rendimiento del Rival")
 
 # --- TÍTULO PRINCIPAL ---
-st.title("⚽ Informe de Rendimiento del Rival")
+
 # --- FUNCIÓN PARA VALIDAR NOMBRES ---
 def es_nombre_valido(nombre):
     patron = r"^[a-zA-ZáéíóúÁÉÍÓÚüÜñÑ\s\-]{1,40}$"
