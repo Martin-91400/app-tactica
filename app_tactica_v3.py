@@ -22,20 +22,21 @@ st.markdown("""
     }
     </style>
 """, unsafe_allow_html=True)
-# --- LOGO EN ESQUINA SUPERIOR IZQUIERDA ---
+# --- LOGO EN ESQUINA SUPERIOR IZQUIERDA (ajustado) ---
 st.markdown("""
     <style>
     .logo-container {
-        position: absolute;
-        top: 10px;
-        left: 10px;
-        z-index: 100;
+        position: fixed;
+        top: 15px;
+        left: 15px;
+        z-index: 9999;
     }
     </style>
     <div class="logo-container">
-        <img src="https://raw.githubusercontent.com/Martin-91400/app-tactica/main/Logo%201.png" width="100">
+        <img src="https://raw.githubusercontent.com/Martin-91400/app-tactica/main/Logo%201.png" width="90">
     </div>
 """, unsafe_allow_html=True)
+
 
 
 
