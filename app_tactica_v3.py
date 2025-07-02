@@ -12,6 +12,17 @@ from xhtml2pdf import pisa  # type: ignore
 import base64
 import tempfile
 import gc
+# --- ESTILO DE FUENTE PERSONALIZADO ---
+st.markdown("""
+    <style>
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
+
+    html, body, [class*="css"]  {
+        font-family: 'Montserrat', sans-serif;
+    }
+    </style>
+""", unsafe_allow_html=True)
+
 
 # --- CONTRASEÑA DE ACCESO ---
 PASSWORD = "fútbol2025"
